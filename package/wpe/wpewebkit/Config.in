@@ -114,6 +114,7 @@ config BR2_PACKAGE_WPEWEBKIT_ENABLE_MEDIA_SOURCE
 
 config BR2_PACKAGE_WPEWEBKIT_ENABLE_TV_CONTROL
        bool "TV Control"
+       select BR2_PACKAGE_WPETVCONTROL
        help
           Enable TV Control
 
