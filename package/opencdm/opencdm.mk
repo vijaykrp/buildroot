@@ -3,7 +3,7 @@
 # cdm
 #
 ################################################################################
-OPENCDM_VERSION = d94143f8b7a7404c4fd9aa9e1e415b6ca770ee22
+OPENCDM_VERSION = 4ad5cb97e16ac4a46f7c284e6e7e6fea843397d3
 OPENCDM_SITE_METHOD = git
 OPENCDM_SITE = https://github.com/WebPlatformForEmbedded/WPEOpenCDM.git
 
