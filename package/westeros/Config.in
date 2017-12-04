@@ -18,4 +18,5 @@ if BR2_PACKAGE_WESTEROS
 	source "package/westeros-simpleshell/Config.in"	
 	source "package/westeros-simplebuffer/Config.in"
 	source "package/westeros-soc/Config.in"
+	source "package/westeros-sink/Config.in"
 endif #BR2_PACKAGE_WESTEROS

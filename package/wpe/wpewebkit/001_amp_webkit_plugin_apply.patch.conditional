@@ -1,0 +1,71 @@
+diff --git a/Source/WebCore/platform/graphics/gstreamer/MediaPlayerPrivateGStreamer.cpp b/Source/WebCore/platform/graphics/gstreamer/MediaPlayerPrivateGStreamer.cpp
+index 6fb21f0..0d393e4 100644
+--- a/Source/WebCore/platform/graphics/gstreamer/MediaPlayerPrivateGStreamer.cpp
++++ b/Source/WebCore/platform/graphics/gstreamer/MediaPlayerPrivateGStreamer.cpp
+@@ -2075,6 +2075,14 @@ static HashSet<String, ASCIICaseInsensitiveHash>& mimeTypeSet()
+                 set.add(AtomicString("audio/webm"));
+         }
+ 
++        //Synaptics Workaround
++        set.add(AtomicString("video/mp4"));
++        set.add(AtomicString("audio/mp4"));
++        set.add(AtomicString("video/webm"));
++        set.add(AtomicString("video/x-vp8"));
++        set.add(AtomicString("video/x-vp9"));
++        set.add(AtomicString("audio/x-vorbis"));
++
+         gst_plugin_feature_list_free(audioDecoderFactories);
+         gst_plugin_feature_list_free(videoDecoderFactories);
+         gst_plugin_feature_list_free(demuxerFactories);
+@@ -2365,7 +2373,24 @@ void MediaPlayerPrivateGStreamer::createGSTPlayBin()
+     m_videoSink = gst_element_factory_make( "db410csink", "optimized vsink");
+     g_object_set(m_pipeline.get(), "video-sink", m_videoSink.get(), nullptr);
+ #endif    
+-    
++
++// TODO: define new Macro for custom amp audio-sink, refer to "BCM_NEXUS"
++#if USE(WESTEROS_SINK)
++    GstElement* audioSink = gst_element_factory_make("amparen", "AmpAudioSink");
++    g_object_set(m_pipeline.get(), "audio-sink", audioSink, nullptr);
++
++    GRefPtr<GstClock> clk = adoptGRef(gst_element_provide_clock(audioSink));
++    if (clk) {
++        gst_element_set_clock(m_videoSink.get(), clk.get());
++    }
++    /* Native audio */
++    gint playbin_flag;
++    g_object_get (m_pipeline.get(), "flags", &playbin_flag, NULL);
++    playbin_flag |= 0x00000020;
++    g_object_set (m_pipeline.get(), "flags", playbin_flag, NULL);
++#endif
++
++
+ #if !USE(WESTEROS_SINK) && !USE(FUSION_SINK)
+     g_object_set(m_pipeline.get(), "audio-sink", createAudioSink(), nullptr);
+ #endif
+diff --git a/Source/WebCore/platform/graphics/gstreamer/mse/MediaPlayerPrivateGStreamerMSE.cpp b/Source/WebCore/platform/graphics/gstreamer/mse/MediaPlayerPrivateGStreamerMSE.cpp
+index a6189cc..44dda0a2 100644
+--- a/Source/WebCore/platform/graphics/gstreamer/mse/MediaPlayerPrivateGStreamerMSE.cpp
++++ b/Source/WebCore/platform/graphics/gstreamer/mse/MediaPlayerPrivateGStreamerMSE.cpp
+@@ -806,8 +806,8 @@ const static HashSet<AtomicString>& codecSet()
+         MediaPlayerPrivateGStreamerBase::initializeGStreamerAndRegisterWebKitElements();
+         HashSet<AtomicString> set;
+ 
+-        GList* audioDecoderFactories = gst_element_factory_list_get_elements(GST_ELEMENT_FACTORY_TYPE_DECODER | GST_ELEMENT_FACTORY_TYPE_MEDIA_AUDIO, GST_RANK_MARGINAL);
+-        GList* videoDecoderFactories = gst_element_factory_list_get_elements(GST_ELEMENT_FACTORY_TYPE_DECODER | GST_ELEMENT_FACTORY_TYPE_MEDIA_VIDEO, GST_RANK_MARGINAL);
++        GList* audioDecoderFactories = gst_element_factory_list_get_elements(GST_ELEMENT_FACTORY_TYPE_PARSER | GST_ELEMENT_FACTORY_TYPE_MEDIA_AUDIO, GST_RANK_MARGINAL);
++        GList* videoDecoderFactories = gst_element_factory_list_get_elements(GST_ELEMENT_FACTORY_TYPE_PARSER | GST_ELEMENT_FACTORY_TYPE_MEDIA_VIDEO, GST_RANK_MARGINAL);
+ 
+         enum ElementType {
+             AudioDecoder = 0,
+@@ -930,8 +930,8 @@ MediaPlayer::SupportsType MediaPlayerPrivateGStreamerMSE::supportsType(const Med
+ 
+     auto containerType = parameters.type.containerType();
+     // Disable VPX/Opus on MSE for now, mp4/avc1 seems way more reliable currently.
+-    if (containerType.endsWith("webm"))
+-        return result;
++    //if (containerType.endsWith("webm"))
++    //    return result;
+ 
+     // YouTube TV provides empty types for some videos and we want to be selected as best media engine for them.
+     if (containerType.isEmpty()) {
