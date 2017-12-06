@@ -29,3 +29,6 @@ cp -pf "${BOARD_DIR}/sd8997.conf" "${TARGET_DIR}/etc/modprobe.d"
 mkdir -p "${TARGET_DIR}/etc/udev/hwdb.d"
 cp -pf "${BOARD_DIR}/90-remote-keymap.hwdb" "${TARGET_DIR}/etc/udev/hwdb.d"
 
+sed -i '/LD_PRELOAD/d' "${TARGET_DIR}/etc/init.d/S80WPEFramework"
+sed -i '/XDG_RUNTIME_DIR/a export LD_PRELOAD=libwesteros_gl.so.0.0.0' "${TARGET_DIR}/etc/init.d/S80WPEFramework"
+
