@@ -53,9 +53,7 @@ WESTEROS_PRE_CONFIGURE_HOOKS += WESTEROS_RUN_AUTOCONF
 
 WESTEROS_PKGDIR = "$(TOP_DIR)/package/westeros"
 define WESTEROS_APPLY_LOCAL_PATCHES
-	@if patch -p1 --dry-run -f -s -d $(@D) <$(WESTEROS_PKGDIR)/0001-westeros_egl.patch.conditional >/dev/null ; then \
-		$(APPLY_PATCHES) $(@D) $(WESTEROS_PKGDIR) 0001-westeros_egl.patch.conditional ; \
-	fi
+	$(APPLY_PATCHES) $(@D) $(WESTEROS_PKGDIR) 0001-westeros_egl.patch.conditional;
 endef
 ifeq ($(BR2_PACKAGE_MARVELL_AMPSDK),y)
 WESTEROS_POST_PATCH_HOOKS += WESTEROS_APPLY_LOCAL_PATCHES
