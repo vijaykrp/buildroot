@@ -287,12 +287,8 @@ endif
 
 WPEWEBKIT_PKGDIR = "$(TOP_DIR)/package/wpe/wpewebkit"
 define WPEWEBKIT_APPLY_LOCAL_PATCHES
-	@if patch -p1 --dry-run -f -s -d $(@D) <$(WPEWEBKIT_PKGDIR)/001_amp_webkit_plugin_apply.patch.conditional >/dev/null ; then \
-		$(APPLY_PATCHES) $(@D) $(WPEWEBKIT_PKGDIR) 001_amp_webkit_plugin_apply.patch.conditional ; \
-	fi
-	@if patch -p1 --dry-run -f -s -d $(@D) <$(WPEWEBKIT_PKGDIR)/001_webkit_fix_black_screen_issue.patch.conditional >/dev/null ; then \
-		$(APPLY_PATCHES) $(@D) $(WPEWEBKIT_PKGDIR) 001_webkit_fix_black_screen_issue.patch.conditional ; \
-	fi
+	$(APPLY_PATCHES) $(@D) $(WPEWEBKIT_PKGDIR) 001_amp_webkit_plugin_apply.patch.conditional;
+	$(APPLY_PATCHES) $(@D) $(WPEWEBKIT_PKGDIR) 001_webkit_fix_black_screen_issue.patch.conditional;
 endef
 ifeq ($(BR2_PACKAGE_MARVELL_AMPSDK),y)
 WPEWEBKIT_POST_PATCH_HOOKS += WPEWEBKIT_APPLY_LOCAL_PATCHES

@@ -1,8 +1,8 @@
 diff --git a/Source/WebCore/platform/graphics/gstreamer/MediaPlayerPrivateGStreamer.cpp b/Source/WebCore/platform/graphics/gstreamer/MediaPlayerPrivateGStreamer.cpp
-index 6fb21f0..0d393e4 100644
+index 909a8f1..d00bd24 100644
 --- a/Source/WebCore/platform/graphics/gstreamer/MediaPlayerPrivateGStreamer.cpp
 +++ b/Source/WebCore/platform/graphics/gstreamer/MediaPlayerPrivateGStreamer.cpp
-@@ -2075,6 +2075,14 @@ static HashSet<String, ASCIICaseInsensitiveHash>& mimeTypeSet()
+@@ -2070,6 +2070,14 @@ static HashSet<String, ASCIICaseInsensitiveHash>& mimeTypeSet()
                  set.add(AtomicString("audio/webm"));
          }
  
@@ -17,7 +17,7 @@ index 6fb21f0..0d393e4 100644
          gst_plugin_feature_list_free(audioDecoderFactories);
          gst_plugin_feature_list_free(videoDecoderFactories);
          gst_plugin_feature_list_free(demuxerFactories);
-@@ -2365,7 +2373,24 @@ void MediaPlayerPrivateGStreamer::createGSTPlayBin()
+@@ -2360,7 +2368,24 @@ void MediaPlayerPrivateGStreamer::createGSTPlayBin()
      m_videoSink = gst_element_factory_make( "db410csink", "optimized vsink");
      g_object_set(m_pipeline.get(), "video-sink", m_videoSink.get(), nullptr);
  #endif    
@@ -44,21 +44,21 @@ index 6fb21f0..0d393e4 100644
      g_object_set(m_pipeline.get(), "audio-sink", createAudioSink(), nullptr);
  #endif
 diff --git a/Source/WebCore/platform/graphics/gstreamer/mse/MediaPlayerPrivateGStreamerMSE.cpp b/Source/WebCore/platform/graphics/gstreamer/mse/MediaPlayerPrivateGStreamerMSE.cpp
-index a6189cc..44dda0a2 100644
+index c52a0dd..aab8dba 100644
 --- a/Source/WebCore/platform/graphics/gstreamer/mse/MediaPlayerPrivateGStreamerMSE.cpp
 +++ b/Source/WebCore/platform/graphics/gstreamer/mse/MediaPlayerPrivateGStreamerMSE.cpp
-@@ -806,8 +806,8 @@ const static HashSet<AtomicString>& codecSet()
-         MediaPlayerPrivateGStreamerBase::initializeGStreamerAndRegisterWebKitElements();
-         HashSet<AtomicString> set;
- 
+@@ -805,8 +805,8 @@ const static HashSet<AtomicString>& codecSet()
+         GList* audioDecoderFactories = gst_element_factory_list_get_elements(GST_ELEMENT_FACTORY_TYPE_PARSER | GST_ELEMENT_FACTORY_TYPE_MEDIA_AUDIO, GST_RANK_MARGINAL);
+         GList* videoDecoderFactories = gst_element_factory_list_get_elements(GST_ELEMENT_FACTORY_TYPE_PARSER | GST_ELEMENT_FACTORY_TYPE_MEDIA_VIDEO, GST_RANK_MARGINAL);
+ #else
 -        GList* audioDecoderFactories = gst_element_factory_list_get_elements(GST_ELEMENT_FACTORY_TYPE_DECODER | GST_ELEMENT_FACTORY_TYPE_MEDIA_AUDIO, GST_RANK_MARGINAL);
 -        GList* videoDecoderFactories = gst_element_factory_list_get_elements(GST_ELEMENT_FACTORY_TYPE_DECODER | GST_ELEMENT_FACTORY_TYPE_MEDIA_VIDEO, GST_RANK_MARGINAL);
 +        GList* audioDecoderFactories = gst_element_factory_list_get_elements(GST_ELEMENT_FACTORY_TYPE_PARSER | GST_ELEMENT_FACTORY_TYPE_MEDIA_AUDIO, GST_RANK_MARGINAL);
 +        GList* videoDecoderFactories = gst_element_factory_list_get_elements(GST_ELEMENT_FACTORY_TYPE_PARSER | GST_ELEMENT_FACTORY_TYPE_MEDIA_VIDEO, GST_RANK_MARGINAL);
- 
+ #endif
          enum ElementType {
              AudioDecoder = 0,
-@@ -930,8 +930,8 @@ MediaPlayer::SupportsType MediaPlayerPrivateGStreamerMSE::supportsType(const Med
+@@ -918,8 +918,8 @@ MediaPlayer::SupportsType MediaPlayerPrivateGStreamerMSE::supportsType(const Med
  
      auto containerType = parameters.type.containerType();
      // Disable VPX/Opus on MSE for now, mp4/avc1 seems way more reliable currently.

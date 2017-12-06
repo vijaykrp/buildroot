@@ -9,7 +9,9 @@ mkdir -p "${TARGET_DIR}/www/"
 cp -pf "${BOARD_DIR}/index.html" "${TARGET_DIR}/www/"
 
 mkdir -p "${TARGET_DIR}/etc/init.d/"
+cp -pf "${BOARD_DIR}/S35wpasupplicant" "${TARGET_DIR}/etc/init.d/"
 cp -pf "${BOARD_DIR}/S60ampservice" "${TARGET_DIR}/etc/init.d/"
+cp -pf "${BOARD_DIR}/S61keymap" "${TARGET_DIR}/etc/init.d/"
 cp -pf "${BOARD_DIR}/S65bluetoothd" "${TARGET_DIR}/etc/init.d/"
 cp -pf "${BOARD_DIR}/S70westeros" "${TARGET_DIR}/etc/init.d/"
 
@@ -23,4 +25,7 @@ mkdir -p "${TARGET_DIR}/etc/modprobe.d"
 cp -pf "${BOARD_DIR}/bt8xxx.conf" "${TARGET_DIR}/etc/modprobe.d"
 cp -pf "${BOARD_DIR}/gal3d.conf" "${TARGET_DIR}/etc/modprobe.d"
 cp -pf "${BOARD_DIR}/sd8997.conf" "${TARGET_DIR}/etc/modprobe.d"
+
+mkdir -p "${TARGET_DIR}/etc/udev/hwdb.d"
+cp -pf "${BOARD_DIR}/90-remote-keymap.hwdb" "${TARGET_DIR}/etc/udev/hwdb.d"
 

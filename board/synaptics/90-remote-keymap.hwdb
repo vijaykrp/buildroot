@@ -1,0 +1,4 @@
+evdev:input:b*v2717p32B2e*
+ KEYBOARD_KEY_7004a=esc
+ KEYBOARD_KEY_700f1=backspace
+
