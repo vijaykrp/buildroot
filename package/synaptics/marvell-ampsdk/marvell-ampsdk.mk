@@ -4,7 +4,7 @@
 #
 ################################################################################
 
-MARVELL_AMPSDK_VERSION = 84488f16c331d395b7156fdb3fda607687b9f078
+MARVELL_AMPSDK_VERSION = d4df541e61f549b9d65f9388042e6a25805f459d
 MARVELL_AMPSDK_SITE_METHOD = git
 MARVELL_AMPSDK_SITE = git@github.com:Metrological/marvell-ampsdk.git
 
@@ -71,6 +71,13 @@ define MARVELL_AMPSDK_INSTALL_TARGET_CMDS
 
 	$(call MARVELL_AMPSDK_INSTALL_LIBS,libampclient,$(TARGET_DIR))
 	$(call MARVELL_AMPSDK_INSTALL_LIBS,libgraphics,$(TARGET_DIR))
+
+	$(call MARVELL_AMPSDK_INSTALL_BINS,logcat,$(TARGET_DIR))
+	$(call MARVELL_AMPSDK_INSTALL_BINS,ampdiag,$(TARGET_DIR))
+	$(call MARVELL_AMPSDK_INSTALL_BINS,ampclient_samples,$(TARGET_DIR))
+	$(call MARVELL_AMPSDK_INSTALL_BINS,ampclient_avsettings,$(TARGET_DIR))
+	$(call MARVELL_AMPSDK_INSTALL_LIBS,libdrmclient,$(TARGET_DIR))
+	$(call MARVELL_AMPSDK_INSTALL_LIBS,liblog,$(TARGET_DIR))
 endef
 
 define MARVELL_AMPSDK_INSTALL_STAGING_CMDS

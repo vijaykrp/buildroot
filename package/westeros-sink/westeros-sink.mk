@@ -11,7 +11,7 @@ WESTEROS_SINK_INSTALL_STAGING = YES
 WESTEROS_SINK_AUTORECONF = YES
 WESTEROS_SINK_AUTORECONF_OPTS = "-Icfg"
 
-WESTEROS_SINK_DEPENDENCIES = host-pkgconf host-autoconf wayland libegl
+WESTEROS_SINK_DEPENDENCIES = host-pkgconf host-autoconf westeros libegl
 
 WESTEROS_SINK_CONF_OPTS += \
 	--prefix=/usr/ \
