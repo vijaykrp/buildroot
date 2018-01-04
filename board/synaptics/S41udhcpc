@@ -2,7 +2,7 @@
 
 start() {
 	echo -n "Starting udhcpc: "
-	start-stop-daemon -S -q -b -m -p /var/run/udhcpc.pid --exec /sbin/udhcpc -iwlan0 2>&1
+	start-stop-daemon -S -q -b -m -p /var/run/udhcpc.pid --exec /sbin/udhcpc -- -iwlan0 2>&1
 	sleep 2
 	[ $? == 0 ] && echo "OK" || echo "FAIL"
 }
