@@ -1,0 +1,132 @@
+commit ee5fc33861756bc5ab81b2ba58fcaf3a9fb81edd
+Author: Vijay Kumar Raju P <vijaykr@synaptics.com>
+Date:   Wed Jan 3 14:54:58 2018 -0800
+
+    ampsamples interface.
+
+diff --git a/Source/interfaces/IAMPSamples.h b/Source/interfaces/IAMPSamples.h
+new file mode 100644
+index 0000000..0d61f43
+--- /dev/null
++++ b/Source/interfaces/IAMPSamples.h
+@@ -0,0 +1,20 @@
++#ifndef __IAMPSAMPLES_H
++#define __IAMPSAMPLES_H
++
++#include "Module.h"
++
++namespace WPEFramework {
++namespace Exchange {
++
++    // This interface gives direct access to a AMPSamples instance
++    struct IAMPSamples : virtual public Core::IUnknown {
++
++        enum { ID = 0x0000005E };
++
++        virtual ~IAMPSamples() {}
++        virtual uint32 Configure(const string& config) = 0;
++    };
++}
++}
++
++#endif // __AMPSAMPLES_
+diff --git a/Source/interfaces/Interfaces.vcxproj b/Source/interfaces/Interfaces.vcxproj
+index 0a770b1..0bb2ce6 100644
+--- a/Source/interfaces/Interfaces.vcxproj
++++ b/Source/interfaces/Interfaces.vcxproj
+@@ -110,9 +110,10 @@
+     <ClInclude Include="IVoiceHandler.h" />
+     <ClInclude Include="IWebDriver.h" />
+     <ClInclude Include="IWebServer.h" />
++    <ClInclude Include="IAMPSamples.h" />
+     <ClInclude Include="Module.h" />
+   </ItemGroup>
+   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+   <ImportGroup Label="ExtensionTargets">
+   </ImportGroup>
+-</Project>
+\ No newline at end of file
++</Project>
+diff --git a/Source/interfaces/ProxyStubs.cpp b/Source/interfaces/ProxyStubs.cpp
+index 10e49a7..8c38f19 100644
+--- a/Source/interfaces/ProxyStubs.cpp
++++ b/Source/interfaces/ProxyStubs.cpp
+@@ -3,12 +3,13 @@
+ #include "IComposition.h"
+ #include "IDictionary.h"
+ #include "INetflix.h"
+-#include "IOpenCDMi.h"
+ #include "IProvisioning.h"
+ #include "IRPCLink.h"
++#include "IAMPSamples.h"
+ #include "IResourceCenter.h"
+ #include "IWebDriver.h"
+ #include "IWebServer.h"
++#include "IOpenCDMi.h"
+ 
+ MODULE_NAME_DECLARATION(BUILDREF_WEBBRIDGE)
+ 
+@@ -632,6 +633,18 @@ namespace ProxyStubs {
+         nullptr
+     };
+ 
++    ProxyStub::MethodHandler AMPSamplesStubMethods[] = {
++        [](Core::ProxyType<Core::IPCChannel>&, Core::ProxyType<RPC::InvokeMessage>& message) {
++
++          RPC::Data::Input& parameters(message->Parameters());
++          RPC::Data::Frame::Reader reader(parameters.Reader());
++          RPC::Data::Frame::Writer writer(message->Response().Writer());
++
++          writer.Number(parameters.Implementation<IAMPSamples>()->Configure(reader.Text()));
++        },
++        nullptr
++    };
++
+     typedef ProxyStub::StubType<IBrowser, BrowserStubMethods, ProxyStub::UnknownStub> BrowserStub;
+     typedef ProxyStub::StubType<IBrowser::INotification, BrowserNotificationStubMethods, ProxyStub::UnknownStub> BrowserNotificationStub;
+     typedef ProxyStub::StubType<IWebDriver, WebDriverStubMethods, ProxyStub::UnknownStub> WebDriverStub;
+@@ -648,6 +661,7 @@ namespace ProxyStubs {
+     typedef ProxyStub::StubType<IComposition::INotification, CompositionNotificationStubMethods, ProxyStub::UnknownStub> CompositionNotificationStub;
+     typedef ProxyStub::StubType<IRPCLink, RPCLinkStubMethods, ProxyStub::UnknownStub> RPCLinkStub;
+     typedef ProxyStub::StubType<IRPCLink::INotification, RPCLinkNotificationStubMethods, ProxyStub::UnknownStub> RPCLinkNotificationStub;
++    typedef ProxyStub::StubType<IAMPSamples, AMPSamplesStubMethods, ProxyStub::UnknownStub> AMPSamplesStub;
+ 
+     // -------------------------------------------------------------------------------------------
+     // PROXY
+@@ -1289,6 +1303,28 @@ namespace ProxyStubs {
+         }
+     };
+ 
++    class AMPSamplesProxy : public ProxyStub::UnknownProxyType<IAMPSamples> {
++    public:
++        AMPSamplesProxy(Core::ProxyType<Core::IPCChannel>& channel, void* implementation, const bool otherSideInformed)
++            : BaseClass(channel, implementation, otherSideInformed)
++        {
++        }
++
++        virtual ~AMPSamplesProxy()
++        {
++        }
++
++    public:
++        virtual uint32 Configure(const string& configuration)
++        {
++            IPCMessage newMessage(BaseClass::Message(0));
++            RPC::Data::Frame::Writer writer(newMessage->Parameters().Writer());
++            writer.Text(configuration);
++            Invoke(newMessage);
++            return (newMessage->Response().Reader().Number<uint32>());
++        }
++    };
++
+     // -------------------------------------------------------------------------------------------
+     // Registration
+     // -------------------------------------------------------------------------------------------
+@@ -1312,6 +1348,7 @@ namespace ProxyStubs {
+             RPC::Administrator::Instance().Announce<IComposition::INotification, CompositionNotificationProxy, CompositionNotificationStub>();
+             RPC::Administrator::Instance().Announce<IRPCLink, RPCLinkProxy, RPCLinkStub>();
+             RPC::Administrator::Instance().Announce<IRPCLink::INotification, RPCLinkNotificationProxy, RPCLinkNotificationStub>();
++            RPC::Administrator::Instance().Announce<IAMPSamples, AMPSamplesProxy, AMPSamplesStub>();
+         }
+ 
+         ~Instantiation()

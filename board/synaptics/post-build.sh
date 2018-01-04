@@ -35,3 +35,7 @@ cp -pf "${BOARD_DIR}/99-wpeframework-input-event.rules" "${TARGET_DIR}/etc/udev/
 sed -i '/LD_PRELOAD/d' "${TARGET_DIR}/etc/init.d/S80WPEFramework"
 sed -i '/XDG_RUNTIME_DIR/a export LD_PRELOAD=libwesteros_gl.so.0.0.0' "${TARGET_DIR}/etc/init.d/S80WPEFramework"
 
+mkdir -p "${TARGET_DIR}/usr/bin"
+cp -pf "${BOARD_DIR}/wpe_ampsamples_plugin_start.sh" "${TARGET_DIR}/usr/bin"
+cp -pf "${BOARD_DIR}/wpe_ampsamples_plugin_stop.sh" "${TARGET_DIR}/usr/bin"
+
