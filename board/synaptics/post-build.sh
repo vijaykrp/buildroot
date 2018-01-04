@@ -9,8 +9,9 @@ mkdir -p "${TARGET_DIR}/www/"
 cp -pf "${BOARD_DIR}/index.html" "${TARGET_DIR}/www/"
 
 mkdir -p "${TARGET_DIR}/etc/init.d/"
-cp -pf "${BOARD_DIR}/S35wpasupplicant" "${TARGET_DIR}/etc/init.d/"
-cp -pf "${BOARD_DIR}/S41udhcpc" "${TARGET_DIR}/etc/init.d/"
+# Do not start wpa_supplicant or udhcpc as a service, this is done through /etc/network/interfaces
+#cp -pf "${BOARD_DIR}/S35wpasupplicant" "${TARGET_DIR}/etc/init.d/"
+#cp -pf "${BOARD_DIR}/S40udhcpc" "${TARGET_DIR}/etc/init.d/"
 cp -pf "${BOARD_DIR}/S60ampservice" "${TARGET_DIR}/etc/init.d/"
 cp -pf "${BOARD_DIR}/S61keymap" "${TARGET_DIR}/etc/init.d/"
 cp -pf "${BOARD_DIR}/S62avsettings" "${TARGET_DIR}/etc/init.d/"
@@ -36,10 +37,10 @@ cp -pf "${BOARD_DIR}/99-wpeframework-input-event.rules" "${TARGET_DIR}/etc/udev/
 mkdir -p "${TARGET_DIR}/etc/wpa_supplicant"
 cp -pf "${BOARD_DIR}/wpa_supplicant.conf" "${TARGET_DIR}/etc/wpa_supplicant/wpa_supplicant-wlan0.conf"
 
-#mkdir -p "${TARGET_DIR}/etc/network"
-#cp -pf "${BOARD_DIR}/interfaces" "${TARGET_DIR}/etc/network/interfaces"
-#cp -pf "${BOARD_DIR}/start-wlan0" "${TARGET_DIR}/etc/network/start-wlan0"
-#cp -pf "${BOARD_DIR}/stop-wlan0" "${TARGET_DIR}/etc/network/stop-wlan0"
+mkdir -p "${TARGET_DIR}/etc/network"
+cp -pf "${BOARD_DIR}/interfaces" "${TARGET_DIR}/etc/network/interfaces"
+cp -pf "${BOARD_DIR}/start-wlan0" "${TARGET_DIR}/etc/network/start-wlan0"
+cp -pf "${BOARD_DIR}/stop-wlan0" "${TARGET_DIR}/etc/network/stop-wlan0"
 
 # Add LD_PRELOAD variable to WPEFramework script
 sed -i '/LD_PRELOAD/d' "${TARGET_DIR}/etc/init.d/S80WPEFramework"
