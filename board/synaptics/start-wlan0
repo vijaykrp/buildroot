@@ -1,5 +1,4 @@
 echo "Starting wlan0"
 wpa_supplicant -B -iwlan0 -W -c/etc/wpa_supplicant/wpa_supplicant-wlan0.conf
-#echo "Waiting 60s for wpa_supplicant to connect"
-#sleep 60                                                        
+                                                        
 /sbin/udhcpc -R -b -p /var/run/udhcpc.eth0.pid -i wlan0
