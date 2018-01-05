@@ -1,0 +1,3 @@
+echo "Stopping wlan0"
+killall -q udhcpc        
+killall -q wpa_supplicant
