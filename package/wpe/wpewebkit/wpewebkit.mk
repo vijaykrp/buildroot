@@ -4,7 +4,7 @@
 #
 ################################################################################
 
-WPEWEBKIT_VERSION = 51f31e9087bb059c06daa185ddb8431a17ad98df
+WPEWEBKIT_VERSION = 638821b0b10bef5e3efce24ffb6c29d1f3056986
 WPEWEBKIT_SITE = $(call github,WebPlatformForEmbedded,WPEWebKit,$(WPEWEBKIT_VERSION))
 
 WPEWEBKIT_INSTALL_STAGING = YES
@@ -23,8 +23,8 @@ endif
 WPEWEBKIT_DEPENDENCIES = host-bison host-cmake host-flex host-gperf host-ruby icu pcre
 
 ifeq ($(WPEWEBKIT_BUILD_WEBKIT),y)
-WPEWEBKIT_DEPENDENCIES += wpebackend libgcrypt libgles libegl libepoxy cairo freetype \
-	fontconfig harfbuzz libxml2 libxslt sqlite libsoup jpeg libpng
+WPEWEBKIT_DEPENDENCIES += wpebackend libgcrypt libgles libegl cairo freetype fontconfig \
+	harfbuzz libxml2 libxslt sqlite libsoup jpeg libpng
 endif
 
 WPEWEBKIT_EXTRA_FLAGS = -DCMAKE_EXPORT_COMPILE_COMMANDS=ON
@@ -51,7 +51,7 @@ ifeq ($(WPEWEBKIT_BUILD_WEBKIT),y)
 WPEWEBKIT_FLAGS = \
 	-DEXPORT_DEPRECATED_WEBKIT2_C_API=ON \
 	-DENABLE_ACCELERATED_2D_CANVAS=ON \
-	-DENABLE_GEOLOCATION=OFF \
+	-DENABLE_GEOLOCATION=ON \
 	-DENABLE_DEVICE_ORIENTATION=ON \
 	-DENABLE_GAMEPAD=ON \
 	-DENABLE_SUBTLE_CRYPTO=ON \
@@ -143,8 +143,6 @@ endif
 
 ifeq ($(BR2_PACKAGE_WPEWEBKIT_USE_GSTREAMER_GL),y)
 WPEWEBKIT_FLAGS += -DUSE_GSTREAMER_GL=ON
-else
-WPEWEBKIT_FLAGS += -DUSE_GSTREAMER_GL=OFF
 endif
 
 ifeq ($(BR2_PACKAGE_WPEWEBKIT_USE_GSTREAMER_WEBKIT_HTTP_SRC),y)
@@ -166,9 +164,11 @@ endif
 endif
 
 ifeq ($(BR2_PACKAGE_WESTEROS),y)
+WPEWEBKIT_DEPENDENCIES += westeros
 WPEWEBKIT_FLAGS += -DUSE_WPEWEBKIT_PLATFORM_WESTEROS=ON
 ifeq ($(BR2_PACKAGE_WESTEROS_SINK),y)
-WPEWEBKIT_FLAGS += -DUSE_WESTEROS_SINK=ON
+WPEWEBKIT_DEPENDENCIES += westeros-sink
+WPEWEBKIT_FLAGS += -DUSE_WESTEROS_SINK=ON -DUSE_HOLE_PUNCH_GSTREAMER=ON
 else
 WPEWEBKIT_FLAGS += -DUSE_HOLE_PUNCH_GSTREAMER=OFF
 endif
@@ -203,11 +203,6 @@ ifeq ($(BR2_PACKAGE_WPEWEBKIT_NO_JSC_OPTIMIZATIONS),y)
 WPEWEBKIT_FLAGS += -DENABLE_JIT=OFF -DENABLE_FTL_JIT=OFF
 endif
 
-ifeq ($(BR2_PACKAGE_MARVELL_AMPSDK),y)
-WPEWEBKIT_SYMBOL_FLAGS += -mthumb -DLINUX -DEGL_API_FB -lOSAL -lgraphics -lampclient
-#WPEWEBKIT_DEPENDENCIES += OSAL graphics ampclient
-endif
-
 WPEWEBKIT_EXTRA_FLAGS += \
 	-DCMAKE_C_FLAGS_RELEASE="$(WPEWEBKIT_SYMBOL_FLAGS) $(WPEWEBKIT_DEBUG_BUILD_FLAGS) -Wno-cast-align" \
 	-DCMAKE_CXX_FLAGS_RELEASE="$(WPEWEBKIT_SYMBOL_FLAGS) $(WPEWEBKIT_DEBUG_BUILD_FLAGS) -Wno-cast-align" \
@@ -229,7 +224,7 @@ WPEWEBKIT_BUILD_TARGETS += jsc
 endif
 ifeq ($(WPEWEBKIT_BUILD_WEBKIT),y)
 WPEWEBKIT_BUILD_TARGETS += libWPEWebKit.so libWPEWebInspectorResources.so \
-	WPE{Network,Storage,Web}Process
+	WPE{Database,Network,Web}Process
 
 endif
 
@@ -249,10 +244,10 @@ endif
 
 ifeq ($(WPEWEBKIT_BUILD_WEBKIT),y)
 define WPEWEBKIT_INSTALL_STAGING_CMDS_WEBKIT
-	cp $(WPEWEBKIT_BUILDDIR)/bin/WPE{Network,Storage,Web}Process $(STAGING_DIR)/usr/bin/ && \
+	cp $(WPEWEBKIT_BUILDDIR)/bin/WPE{Database,Network,Web}Process $(STAGING_DIR)/usr/bin/ && \
 	cp -d $(WPEWEBKIT_BUILDDIR)/lib/libWPE* $(STAGING_DIR)/usr/lib/ && \
 	DESTDIR=$(STAGING_DIR) $(HOST_DIR)/usr/bin/cmake -DCOMPONENT=Development -P $(WPEWEBKIT_BUILDDIR)/Source/JavaScriptCore/cmake_install.cmake > /dev/null && \
-	DESTDIR=$(STAGING_DIR) $(HOST_DIR)/usr/bin/cmake -DCOMPONENT=Development -P $(WPEWEBKIT_BUILDDIR)/Source/WebKit/cmake_install.cmake > /dev/null
+	DESTDIR=$(STAGING_DIR) $(HOST_DIR)/usr/bin/cmake -DCOMPONENT=Development -P $(WPEWEBKIT_BUILDDIR)/Source/WebKit2/cmake_install.cmake > /dev/null
 endef
 else
 WPEWEBKIT_INSTALL_STAGING_CMDS_WEBKIT = true
@@ -274,7 +269,7 @@ endif
 
 ifeq ($(WPEWEBKIT_BUILD_WEBKIT),y)
 define WPEWEBKIT_INSTALL_TARGET_CMDS_WEBKIT
-	cp $(WPEWEBKIT_BUILDDIR)/bin/WPE{Network,Storage,Web}Process $(TARGET_DIR)/usr/bin/ && \
+	cp $(WPEWEBKIT_BUILDDIR)/bin/WPE{Database,Network,Web}Process $(TARGET_DIR)/usr/bin/ && \
 	cp -d $(WPEWEBKIT_BUILDDIR)/lib/libWPE* $(TARGET_DIR)/usr/lib/ && \
 	$(STRIPCMD) $(TARGET_DIR)/usr/lib/libWPEWebKit.so.0.0.*
 endef
@@ -287,16 +282,6 @@ define WPEWEBKIT_INSTALL_TARGET_CMDS
 	$(WPEWEBKIT_INSTALL_TARGET_CMDS_WEBKIT))
 endef
 
-endif
-
-
-WPEWEBKIT_PKGDIR = "$(TOP_DIR)/package/wpe/wpewebkit"
-define WPEWEBKIT_APPLY_LOCAL_PATCHES
-	$(APPLY_PATCHES) $(@D) $(WPEWEBKIT_PKGDIR) 001_amp_webkit_plugin_apply.patch.conditional;
-	$(APPLY_PATCHES) $(@D) $(WPEWEBKIT_PKGDIR) 001_webkit_fix_black_screen_issue.patch.conditional;
-endef
-ifeq ($(BR2_PACKAGE_MARVELL_AMPSDK),y)
-WPEWEBKIT_POST_PATCH_HOOKS += WPEWEBKIT_APPLY_LOCAL_PATCHES
 endif
 
 RSYNC_VCS_EXCLUSIONS += --exclude LayoutTests --exclude WebKitBuild
