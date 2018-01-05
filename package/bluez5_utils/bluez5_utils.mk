@@ -3,8 +3,12 @@
 # bluez5_utils
 #
 ################################################################################
-
+ifeq ($(BR2_PACKAGE_MARVELL_AMPSDK),y)
+BLUEZ5_UTILS_VERSION = 5.28
+else
 BLUEZ5_UTILS_VERSION = 5.44
+endif
+
 BLUEZ5_UTILS_SOURCE = bluez-$(BLUEZ5_UTILS_VERSION).tar.xz
 BLUEZ5_UTILS_SITE = $(BR2_KERNEL_MIRROR)/linux/bluetooth
 BLUEZ5_UTILS_INSTALL_STAGING = YES
@@ -76,6 +80,14 @@ BLUEZ5_UTILS_CONF_OPTS += --enable-systemd
 BLUEZ5_UTILS_DEPENDENCIES += systemd
 else
 BLUEZ5_UTILS_CONF_OPTS += --disable-systemd
+endif
+
+BLUEZ5_UTILS_PKGDIR = "$(TOP_DIR)/package/bluez5_utils"
+define BLUEZ5_UTILS_APPLY_LOCAL_PATCHES
+        $(APPLY_PATCHES) $(@D) $(BLUEZ5_UTILS_PKGDIR) 0001-tools-bneptest.c-Remove-include-linux-if_bridge.h-to.patch.conditional;
+endef
+ifneq ($(BR2_PACKAGE_MARVELL_AMPSDK),y)
+BLUEZ5_UTILS_POST_PATCH_HOOKS += BLUEZ5_UTILS_APPLY_LOCAL_PATCHES
 endif
 
 define BLUEZ5_UTILS_INSTALL_INIT_SYSTEMD
