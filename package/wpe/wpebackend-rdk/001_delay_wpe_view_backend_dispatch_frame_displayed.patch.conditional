@@ -20,8 +20,8 @@ index 5f3efd6..503f1f0 100644
 +    gettimeofday(&end_t, NULL);
 +    secs = (double)(end_t.tv_usec - start_t.tv_usec) / 1000000 + (double)(end_t.tv_sec - start_t.tv_sec);
 +    //fprintf(stderr, "DEBUG: %s %d diff=%f\n", __FUNCTION__, __LINE__, secs);
-+    if(secs < 0.020){
-+        usleep((0.020-secs)*1000*1000);
++    if(secs < 0.040){
++        usleep((0.040-secs)*1000*1000);
 +    }
      wpe_view_backend_dispatch_frame_displayed(backend);
 +    gettimeofday(&start_t, NULL);

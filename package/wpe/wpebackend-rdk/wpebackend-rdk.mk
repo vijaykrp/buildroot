@@ -107,6 +107,7 @@ WPEBACKEND_RDK_CONF_OPTS = \
 WPEBACKEND_RDK_PKGDIR = "$(TOP_DIR)/package/westeros"
 define WPEBACKEND_RDK_APPLY_LOCAL_PATCHES
 	$(APPLY_PATCHES) $(@D) $(WPEBACKEND_RDK_PKGDIR) 001_delay_wpe_view_backend_dispatch_frame_displayed.patch.conditional;
+        $(APPLY_PATCHES) $(@D) $(WPEBACKEND_RDK_PKGDIR) 0001-wpebackend_enable_1080p_gfx.patch.conditional;
 endef
 ifeq ($(BR2_PACKAGE_MARVELL_AMPSDK),y)
 WPEBACKEND_RDK_POST_PATCH_HOOKS += WPEBACKEND_RDK_APPLY_LOCAL_PATCHES
