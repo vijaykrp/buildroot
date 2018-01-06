@@ -1,8 +1,18 @@
+From df087e8db8528abb2d0ec2b71f0dbf09526f73e6 Mon Sep 17 00:00:00 2001
+From: pradeeps <pradeeps@synaptics.com>
+Date: Wed, 8 Nov 2017 15:07:23 -0800
+Subject: [PATCH] amp webkit plugin apply
+
+---
+ .../gstreamer/MediaPlayerPrivateGStreamer.cpp      | 27 +++++++++++++++++++++-
+ .../mse/MediaPlayerPrivateGStreamerMSE.cpp         |  6 ++---
+ 2 files changed, 29 insertions(+), 4 deletions(-)
+
 diff --git a/Source/WebCore/platform/graphics/gstreamer/MediaPlayerPrivateGStreamer.cpp b/Source/WebCore/platform/graphics/gstreamer/MediaPlayerPrivateGStreamer.cpp
-index 6fb21f0..0d393e4 100644
+index 705a1f0..d403158 100644
 --- a/Source/WebCore/platform/graphics/gstreamer/MediaPlayerPrivateGStreamer.cpp
 +++ b/Source/WebCore/platform/graphics/gstreamer/MediaPlayerPrivateGStreamer.cpp
-@@ -2075,6 +2075,14 @@ static HashSet<String, ASCIICaseInsensitiveHash>& mimeTypeSet()
+@@ -1973,6 +1973,14 @@ static HashSet<String, ASCIICaseInsensitiveHash>& mimeTypeSet()
                  set.add(AtomicString("audio/webm"));
          }
  
@@ -17,7 +27,7 @@ index 6fb21f0..0d393e4 100644
          gst_plugin_feature_list_free(audioDecoderFactories);
          gst_plugin_feature_list_free(videoDecoderFactories);
          gst_plugin_feature_list_free(demuxerFactories);
-@@ -2365,7 +2373,24 @@ void MediaPlayerPrivateGStreamer::createGSTPlayBin()
+@@ -2245,7 +2253,24 @@ void MediaPlayerPrivateGStreamer::createGSTPlayBin()
      m_videoSink = gst_element_factory_make( "db410csink", "optimized vsink");
      g_object_set(m_pipeline.get(), "video-sink", m_videoSink.get(), nullptr);
  #endif    
@@ -44,28 +54,29 @@ index 6fb21f0..0d393e4 100644
      g_object_set(m_pipeline.get(), "audio-sink", createAudioSink(), nullptr);
  #endif
 diff --git a/Source/WebCore/platform/graphics/gstreamer/mse/MediaPlayerPrivateGStreamerMSE.cpp b/Source/WebCore/platform/graphics/gstreamer/mse/MediaPlayerPrivateGStreamerMSE.cpp
-index a6189cc..44dda0a2 100644
+index 3893944..1763c2d 100644
 --- a/Source/WebCore/platform/graphics/gstreamer/mse/MediaPlayerPrivateGStreamerMSE.cpp
 +++ b/Source/WebCore/platform/graphics/gstreamer/mse/MediaPlayerPrivateGStreamerMSE.cpp
-@@ -806,8 +806,8 @@ const static HashSet<AtomicString>& codecSet()
-         MediaPlayerPrivateGStreamerBase::initializeGStreamerAndRegisterWebKitElements();
-         HashSet<AtomicString> set;
+@@ -800,7 +800,7 @@ void MediaPlayerPrivateGStreamerMSE::trackDetected(RefPtr<AppendPipeline> append
  
--        GList* audioDecoderFactories = gst_element_factory_list_get_elements(GST_ELEMENT_FACTORY_TYPE_DECODER | GST_ELEMENT_FACTORY_TYPE_MEDIA_AUDIO, GST_RANK_MARGINAL);
--        GList* videoDecoderFactories = gst_element_factory_list_get_elements(GST_ELEMENT_FACTORY_TYPE_DECODER | GST_ELEMENT_FACTORY_TYPE_MEDIA_VIDEO, GST_RANK_MARGINAL);
-+        GList* audioDecoderFactories = gst_element_factory_list_get_elements(GST_ELEMENT_FACTORY_TYPE_PARSER | GST_ELEMENT_FACTORY_TYPE_MEDIA_AUDIO, GST_RANK_MARGINAL);
-+        GList* videoDecoderFactories = gst_element_factory_list_get_elements(GST_ELEMENT_FACTORY_TYPE_PARSER | GST_ELEMENT_FACTORY_TYPE_MEDIA_VIDEO, GST_RANK_MARGINAL);
+ bool MediaPlayerPrivateGStreamerMSE::supportsCodecs(const String& codecs)
+ {
+-    static Vector<const char*> supportedCodecs = { "avc*", "mp4a*", "mpeg", "x-h264" };
++    static Vector<const char*> supportedCodecs = { "avc*", "mp4a*", "mpeg", "x-h264", "x-vp8", "x-vp9", "x-vorbis" };
+     Vector<String> codecEntries;
+     codecs.split(',', false, codecEntries);
  
-         enum ElementType {
-             AudioDecoder = 0,
-@@ -930,8 +930,8 @@ MediaPlayer::SupportsType MediaPlayerPrivateGStreamerMSE::supportsType(const Med
+@@ -842,8 +842,8 @@ MediaPlayer::SupportsType MediaPlayerPrivateGStreamerMSE::supportsType(const Med
+         return result;
  
-     auto containerType = parameters.type.containerType();
      // Disable VPX/Opus on MSE for now, mp4/avc1 seems way more reliable currently.
--    if (containerType.endsWith("webm"))
+-    if (parameters.type.endsWith("webm"))
 -        return result;
-+    //if (containerType.endsWith("webm"))
++    //if (parameters.type.endsWith("webm"))
 +    //    return result;
  
      // YouTube TV provides empty types for some videos and we want to be selected as best media engine for them.
-     if (containerType.isEmpty()) {
+     if (parameters.type.isEmpty()) {
+-- 
+1.9.1
+
