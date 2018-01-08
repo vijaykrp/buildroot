@@ -48,25 +48,18 @@ index 0a770b1..0bb2ce6 100644
 \ No newline at end of file
 +</Project>
 diff --git a/Source/interfaces/ProxyStubs.cpp b/Source/interfaces/ProxyStubs.cpp
-index 10e49a7..8c38f19 100644
+index a59d9c9..fe1baff 100644
 --- a/Source/interfaces/ProxyStubs.cpp
 +++ b/Source/interfaces/ProxyStubs.cpp
-@@ -3,12 +3,13 @@
- #include "IComposition.h"
- #include "IDictionary.h"
- #include "INetflix.h"
--#include "IOpenCDMi.h"
+@@ -6,6 +6,7 @@
+ #include "IOpenCDMi.h"
  #include "IProvisioning.h"
  #include "IRPCLink.h"
 +#include "IAMPSamples.h"
  #include "IResourceCenter.h"
- #include "IWebDriver.h"
- #include "IWebServer.h"
-+#include "IOpenCDMi.h"
- 
- MODULE_NAME_DECLARATION(BUILDREF_WEBBRIDGE)
- 
-@@ -632,6 +633,18 @@ namespace ProxyStubs {
+ #include "IStreaming.h"
+ #include "IGuide.h"
+@@ -1107,6 +1108,18 @@ namespace ProxyStubs {
          nullptr
      };
  
@@ -82,18 +75,18 @@ index 10e49a7..8c38f19 100644
 +        nullptr
 +    };
 +
+     // IRPCLink::INotification interface stub definitions
+ 
      typedef ProxyStub::StubType<IBrowser, BrowserStubMethods, ProxyStub::UnknownStub> BrowserStub;
-     typedef ProxyStub::StubType<IBrowser::INotification, BrowserNotificationStubMethods, ProxyStub::UnknownStub> BrowserNotificationStub;
-     typedef ProxyStub::StubType<IWebDriver, WebDriverStubMethods, ProxyStub::UnknownStub> WebDriverStub;
-@@ -648,6 +661,7 @@ namespace ProxyStubs {
-     typedef ProxyStub::StubType<IComposition::INotification, CompositionNotificationStubMethods, ProxyStub::UnknownStub> CompositionNotificationStub;
+@@ -1130,6 +1143,7 @@ namespace ProxyStubs {
      typedef ProxyStub::StubType<IRPCLink, RPCLinkStubMethods, ProxyStub::UnknownStub> RPCLinkStub;
      typedef ProxyStub::StubType<IRPCLink::INotification, RPCLinkNotificationStubMethods, ProxyStub::UnknownStub> RPCLinkNotificationStub;
+     typedef ProxyStub::StubType<IPower, PowerStubMethods, ProxyStub::UnknownStub> PowerStub;
 +    typedef ProxyStub::StubType<IAMPSamples, AMPSamplesStubMethods, ProxyStub::UnknownStub> AMPSamplesStub;
  
      // -------------------------------------------------------------------------------------------
      // PROXY
-@@ -1289,6 +1303,28 @@ namespace ProxyStubs {
+@@ -2158,6 +2172,28 @@ namespace ProxyStubs {
          }
      };
  
@@ -122,10 +115,10 @@ index 10e49a7..8c38f19 100644
      // -------------------------------------------------------------------------------------------
      // Registration
      // -------------------------------------------------------------------------------------------
-@@ -1312,6 +1348,7 @@ namespace ProxyStubs {
-             RPC::Administrator::Instance().Announce<IComposition::INotification, CompositionNotificationProxy, CompositionNotificationStub>();
+@@ -2186,6 +2222,7 @@ namespace ProxyStubs {
              RPC::Administrator::Instance().Announce<IRPCLink, RPCLinkProxy, RPCLinkStub>();
              RPC::Administrator::Instance().Announce<IRPCLink::INotification, RPCLinkNotificationProxy, RPCLinkNotificationStub>();
+             RPC::Administrator::Instance().Announce<IPower, PowerProxy, PowerStub>();
 +            RPC::Administrator::Instance().Announce<IAMPSamples, AMPSamplesProxy, AMPSamplesStub>();
          }
  

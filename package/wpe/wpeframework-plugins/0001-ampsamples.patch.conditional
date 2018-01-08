@@ -397,6 +397,9 @@ index 0000000..823157c
 +        {
 +            return (_main.IsActive());
 +        }
++        virtual void Observe(const bool enable)
++        {
++        }
 +
 +        BEGIN_INTERFACE_MAP(MemoryObserverImpl)
 +	    INTERFACE_ENTRY(Exchange::IMemory)
@@ -482,18 +485,19 @@ diff --git a/CMakeLists.txt b/CMakeLists.txt
 index c3194a9..8140302 100644
 --- a/CMakeLists.txt
 +++ b/CMakeLists.txt
-@@ -98,6 +98,7 @@ option(WPEFRAMEWORK_PLUGIN_WEBPROXY "Include WebProxy plugin" OFF)
- option(WPEFRAMEWORK_PLUGIN_WEBSERVER "Include WebServer plugin" OFF)
- option(WPEFRAMEWORK_PLUGIN_WEBSHELL "Include WebShell plugin" OFF)
+@@ -101,6 +101,7 @@ option(WPEFRAMEWORK_PLUGIN_WEBSHELL "Include WebShell plugin" OFF)
+ option(WPEFRAMEWORK_PLUGIN_TVCONTROL "Include TVControl plugin" OFF)
  option(WPEFRAMEWORK_PLUGIN_WIFISETUP "Include WifiSetup plugin" OFF)
+ option(WPEFRAMEWORK_PLUGIN_POWER "Include Power plugin" OFF)
 +option(WPEFRAMEWORK_PLUGIN_AMPSAMPLES "Include AMPSamples plugin" OFF)
  
  include_directories(${WPEFRAMEWORK_PLUGINS_INCLUDE_DIRS})
  
-@@ -169,3 +170,6 @@ if(WPEFRAMEWORK_PLUGIN_WIFISETUP)
-     add_subdirectory(WifiSetup)
- endif()
- 
+@@ -187,3 +188,7 @@ endif()
+ if(WPEFRAMEWORK_PLUGIN_POWER)
+     add_subdirectory(Power)
+ endif(WPEFRAMEWORK_PLUGIN_POWER)
++
 +if(WPEFRAMEWORK_PLUGIN_AMPSAMPLES)
 +    add_subdirectory(AMPSamples)
 +endif()
